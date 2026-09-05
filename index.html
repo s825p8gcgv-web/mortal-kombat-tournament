@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>MORTAL KOMBAT — ANNA'S TOURNAMENT</title>
+<style>
+:root{--bg:#090909;--panel:#151515;--panel2:#1d1d1d;--red:#e21d2f;--red2:#ff3347;--gold:#d7a83d;--text:#f4f4f4;--muted:#989898;--green:#40d47a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:#070707;color:var(--text);font-family:Impact,Haettenschweiler,"Arial Narrow Bold",Arial,sans-serif;min-height:100%;letter-spacing:.5px}
+body{background:
+radial-gradient(circle at 50% -10%,#3a0b0b 0,#130707 27%,#070707 60%),
+repeating-linear-gradient(135deg,rgba(255,255,255,.018) 0 2px,transparent 2px 7px)}
+button,input{font:inherit}
+button{cursor:pointer}
+.header{padding:18px 18px 10px;text-align:center;border-bottom:1px solid #3a1719;position:sticky;top:0;background:rgba(7,7,7,.94);backdrop-filter:blur(10px);z-index:20}
+.logo{font-size:clamp(30px,8vw,64px);line-height:.9;text-transform:uppercase;color:#eee;text-shadow:3px 3px 0 #650b12,-1px -1px 0 #000;letter-spacing:2px}
+.logo b{color:var(--red2)}
+.subtitle{font:700 11px Arial,sans-serif;color:#aaa;letter-spacing:3px;margin-top:8px}
+.tabs{display:flex;gap:6px;justify-content:center;padding:10px 10px 0}
+.tab{border:1px solid #4b2225;background:#111;color:#aaa;padding:11px 15px;border-radius:5px 5px 0 0}
+.tab.active{background:#8d111b;color:white;border-color:#bd2936}
+.page{display:none;padding:14px;max-width:1150px;margin:auto}
+.page.active{display:block}
+.hero{display:grid;grid-template-columns:1.25fr .75fr;gap:14px}
+.card{background:linear-gradient(145deg,#191919,#0e0e0e);border:1px solid #382326;border-radius:9px;padding:15px;box-shadow:0 10px 35px #0008}
+h2,h3{margin:0 0 12px;text-transform:uppercase}
+.kicker{color:var(--red2);font:900 12px Arial,sans-serif;letter-spacing:2px}
+.bigbtn{width:100%;min-height:70px;background:linear-gradient(#c31d2c,#720d16);border:1px solid #ef3a48;color:#fff;border-radius:7px;font-size:25px;box-shadow:0 0 0 2px #2b090c inset,0 8px 22px #000}
+.bigbtn:active{transform:scale(.985)}
+.roulette{min-height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;overflow:hidden}
+.roulette:before{content:"";position:absolute;inset:-80px;background:conic-gradient(from 0deg,transparent,#5e1018,transparent,#2d0b0e,transparent);animation:spinbg 8s linear infinite;opacity:.35}
+@keyframes spinbg{to{transform:rotate(360deg)}}
+.versus{position:relative;z-index:1;display:flex;align-items:center;gap:16px;width:100%;justify-content:center}
+.fighter{width:min(38vw,260px);min-height:150px;border:1px solid #4d2528;background:#0b0b0b;padding:8px;position:relative;overflow:hidden}
+.fighter .pic{height:110px;background:#222 center/cover no-repeat;filter:grayscale(.7) contrast(1.35) saturate(1.3)}
+.fighter .name{font-size:20px;margin-top:5px}
+.vs{font-size:35px;color:var(--gold);text-shadow:0 0 15px #f00;flex:0 0 auto}
+.rolling{animation:shake .08s linear infinite}
+@keyframes shake{50%{transform:translateX(3px) rotate(.7deg)}}
+.result{margin-top:12px;font-size:18px;text-align:center;min-height:30px;color:#ddd}
+.small{font:12px Arial,sans-serif;color:var(--muted)}
+.roster{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:14px}
+.roster .card{padding:8px;text-align:center}
+.roster .portrait{height:150px;background:#202020 center/cover no-repeat;filter:grayscale(.65) contrast(1.4) saturate(1.35);border-bottom:2px solid var(--red)}
+.roster .rn{font-size:18px;margin-top:6px}
+.upload{font:11px Arial,sans-serif;color:#aaa;margin-top:7px;width:100%}
+.upload::file-selector-button{background:#2a1114;color:#eee;border:1px solid #663038;border-radius:4px;padding:5px}
+.tablewrap{overflow:auto}
+table{width:100%;border-collapse:collapse;min-width:720px}
+th,td{border:1px solid #332023;padding:9px;text-align:center}
+th{background:#250c10;color:#e9b4b8;font-size:12px}
+td{background:#101010;font-family:Arial,sans-serif;font-size:13px}
+.done{color:var(--green);font-weight:bold}
+.pending{color:#777}
+.winbtn{background:#94121d;color:white;border:1px solid #d52a39;padding:7px 10px;border-radius:4px}
+.winbtn:disabled{opacity:.25}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:14px}
+.stat{background:#111;border:1px solid #352124;padding:10px;text-align:center}
+.stat .n{font-size:25px;color:#fff}.stat .s{font:10px Arial;color:#999;text-transform:uppercase}
+.rank{font-size:28px;color:var(--gold)}
+.matchrow{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid #2d1b1e;background:#111;padding:10px;margin:6px 0;border-radius:6px}
+.matchrow.done{opacity:.55}
+.bracket{display:grid;gap:10px}
+.stage{border-left:3px solid var(--red);padding:10px;background:#111}
+.fatal{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:100;display:none;align-items:center;justify-content:center;flex-direction:column;text-align:center}
+.fatal.show{display:flex;animation:fade .25s}
+.fatal .word{font-size:clamp(60px,16vw,150px);color:#e52334;text-shadow:0 0 5px #fff,5px 5px 0 #56050b,0 0 50px #e52334;animation:slam .6s cubic-bezier(.2,1.7,.3,1)}
+.fatal .winner{font-size:clamp(24px,6vw,55px);color:#fff}
+.fatal .streak{font:700 16px Arial;color:#f1c45a;margin-top:12px}
+.fatal button{margin-top:25px;padding:13px 25px;background:#eee;color:#111;border:0;border-radius:5px}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes slam{0%{transform:scale(2.2) rotate(-5deg);opacity:0}100%{transform:scale(1);opacity:1}}
+.champ{display:none;text-align:center;padding:25px;border:1px solid #8d6a20;background:radial-gradient(circle,#4a3108,#111 60%)}
+.champ.show{display:block;animation:fade .5s}
+.champ .cw{font-size:54px;color:var(--gold)}
+.reset{background:#171717;color:#aaa;border:1px solid #443033;padding:9px 12px;border-radius:5px}
+@media(max-width:760px){.hero{grid-template-columns:1fr}.roster{grid-template-columns:repeat(2,1fr)}.roster .portrait{height:170px}.stats{grid-template-columns:repeat(3,1fr)}.fighter{width:38vw}.fighter .pic{height:95px}.versus{gap:6px}}
+@media(max-width:430px){.roster{grid-template-columns:1fr 1fr}.stats{grid-template-columns:repeat(2,1fr)}.vs{font-size:25px}}
+</style>
+</head>
+<body>
+<header class="header">
+  <div class="logo">MORTAL <b>KOMBAT</b></div>
+  <div class="subtitle">5 FIGHTERS • DOUBLE ROUND ROBIN • NO BYES</div>
+  <div class="tabs">
+    <button class="tab active" data-tab="roulette">⚔ РУЛЕТКА</button>
+    <button class="tab" data-tab="table">☠ ТАБЛИЦА</button>
+    <button class="tab" data-tab="fighters">🥷 БОЙЦЫ</button>
+  </div>
+</header>
+
+<main>
+<section id="roulette" class="page active">
+  <div class="hero">
+    <div class="card roulette" id="rouletteCard">
+      <div class="kicker">NEXT FIGHT</div>
+      <div class="versus">
+        <div class="fighter" id="rf1"><div class="pic"></div><div class="name">?</div></div>
+        <div class="vs">VS</div>
+        <div class="fighter" id="rf2"><div class="pic"></div><div class="name">?</div></div>
+      </div>
+      <div class="result" id="rouletteResult">Нажмите кнопку — рулетка найдёт только бой, который ещё не сыгран.</div>
+      <button class="bigbtn" id="spin">SPIN THE FIGHT</button>
+    </div>
+    <div class="card">
+      <div class="kicker">TOURNAMENT</div>
+      <h2>20 боёв + плей-офф</h2>
+      <p class="small">Каждая пара встречается дважды. После группового этапа: полуфиналы, бой за 3-е место и FATALITY-финал.</p>
+      <div class="stats" id="miniStats"></div>
+      <button class="reset" id="reset">Сбросить турнир</button>
+    </div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h3>Как играть</h3>
+    <p class="small">1. Нажмите SPIN THE FIGHT. 2. Играйте выбранный бой. 3. В таблице нажмите «Победитель» напротив нужного результата. 4. После 20 групповых боёв откроется плей-офф.</p>
+  </div>
+  <div class="champ" id="champ"><div class="cw">🏆 CHAMPION</div><div id="champName" style="font-size:35px"></div><div class="small">THE LAST KOMBATANT</div></div>
+</section>
+
+<section id="table" class="page">
+  <div class="card">
+    <h2>Турнирная таблица</h2>
+    <div class="tablewrap"><table><thead><tr><th>#</th><th>FIGHTER</th><th>W</th><th>L</th><th>PTS</th><th>STATUS</th></tr></thead><tbody id="standings"></tbody></table></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>20 групповых боёв</h2>
+    <div id="matches"></div>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>PLAYOFF</h2>
+    <div id="playoff"></div>
+  </div>
+</section>
+
+<section id="fighters" class="page">
+  <div class="card">
+    <h2>Бойцы</h2>
+    <p class="small"><b>Safari/iPad:</b> если файл открыт из «Файлы», нажмите «Поделиться» → «Открыть в Safari». Для удобства можно добавить страницу на экран «Домой».<br><br>Загрузите фото прямо с iPad. Карточка автоматически получает мрачный красно-чёрный фильтр и оформление в духе файтинга. Фото хранится только в этом браузере.</p>
+    <div class="roster" id="roster"></div>
+  </div>
+</section>
+</main>
+
+<div class="fatal" id="fatal">
+  <div class="word" id="fatalWord">FATALITY!</div>
+  <div class="winner" id="fatalWinner"></div>
+  <div class="streak" id="fatalStreak"></div>
+  <button id="closeFatal">CONTINUE</button>
+</div>
+
+<script>
+const fighters=["Вован","Кристина","Настя","Игорь","Аня"];
+const key="mk_tournament_v2";
+let state=JSON.parse(localStorage.getItem(key)||"null");
+if(!state){
+  state={results:{},playoff:{sf1:null,sf2:null,third:null,final:null},photos:{},lastSpin:null};
+}
+const pairs=[];
+for(let i=0;i<5;i++)for(let j=i+1;j<5;j++){pairs.push([fighters[i],fighters[j]]);pairs.push([fighters[j],fighters[i]])}
+const pairKey=(a,b)=>a+"__"+b;
+const save=()=>localStorage.setItem(key,JSON.stringify(state));
+const playedGroup=()=>Object.keys(state.results).length;
+function wins(name){return Object.values(state.results).filter(x=>x.w===name).length}
+function losses(name){return Object.values(state.results).filter(x=>x.l===name).length}
+function streak(name){
+ let arr=Object.values(state.results).filter(x=>x.w===name||x.l===name).map(x=>x.w===name?"W":"L");
+ let n=0;for(let i=arr.length-1;i>=0&&arr[i]==="W";i--)n++;return n;
+}
+function photo(name){
+ return state.photos[name]||"";
+}
+function fighterHTML(name,id){
+ return `<div class="fighter" id="${id}"><div class="pic" style="${photo(name)?`background-image:url('${photo(name)}')`:""}"></div><div class="name">${name}</div></div>`;
+}
+function render(){
+ document.querySelectorAll(".tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".tab").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));document.getElementById(b.dataset.tab).classList.add("active");});
+ const sorted=[...fighters].sort((a,b)=>wins(b)-wins(a)||losses(a)-losses(b));
+ document.getElementById("standings").innerHTML=sorted.map((n,i)=>`<tr><td class="rank">${i+1}</td><td><b>${n}</b></td><td>${wins(n)}</td><td>${losses(n)}</td><td>${wins(n)*3}</td><td>${i===0?"LEADER":"ACTIVE"}</td></tr>`).join("");
+ document.getElementById("miniStats").innerHTML=fighters.map(n=>`<div class="stat"><div class="n">${wins(n)}–${losses(n)}</div><div class="s">${n}</div></div>`).join("");
+ document.getElementById("matches").innerHTML=pairs.map((p,i)=>{
+   const r=state.results[pairKey(p[0],p[1])];
+   return `<div class="matchrow ${r?"done":""}"><div><b>FIGHT ${i+1}</b><br><span class="small">${p[0]} vs ${p[1]}</span></div><div>${r?`<span class="done">${r.w} WINS</span>`:`<button class="winbtn" onclick="record('${p[0]}','${p[1]}')">${p[0]} победил</button> <button class="winbtn" onclick="record('${p[1]}','${p[0]}')">${p[1]} победил</button>`}</div></div>`;
+ }).join("");
+ renderPlayoff();
+ renderRoster();
+ if(playedGroup()===20 && !state.playoff.sf1 && !state.playoff.sf2){
+   const s=[...fighters].sort((a,b)=>wins(b)-wins(a)||losses(a)-losses(b));
+   state.playoff.sf1={a:s[0],b:s[3]};state.playoff.sf2={a:s[1],b:s[2]};save();
+ }
+}
+function record(w,l){
+ const k=pairKey(w,l);
+ if(state.results[k])return;
+ state.results[k]={w,l,at:Date.now()};
+ save(); showFatal(w); render();
+}
+function showFatal(w){
+ document.getElementById("fatalWinner").textContent=w+" — WINNER!";
+ const s=streak(w);document.getElementById("fatalStreak").textContent=s>1?`🔥 WIN STREAK: ${s}`:"";
+ document.getElementById("fatal").classList.add("show");
+}
+document.getElementById("closeFatal").onclick=()=>document.getElementById("fatal").classList.remove("show");
+
+function renderPlayoff(){
+ const p=state.playoff;
+ let html=`<div class="stage"><b>SEMIFINAL 1</b><div class="matchrow">${p.sf1?`${p.sf1.a} <button class="winbtn" onclick="playoffWin('sf1','a')" ${p.sf1.winner?'disabled':''}>WIN</button> VS ${p.sf1.b} <button class="winbtn" onclick="playoffWin('sf1','b')" ${p.sf1.winner?'disabled':''}>WIN</button>`:"Откроется после 20 групповых боёв"}</div>${p.sf1?.winner?`<span class="done">Победитель: ${p.sf1.winner}</span>`:""}</div>`;
+ html+=`<div class="stage"><b>SEMIFINAL 2</b><div class="matchrow">${p.sf2?`${p.sf2.a} <button class="winbtn" onclick="playoffWin('sf2','a')" ${p.sf2.winner?'disabled':''}>WIN</button> VS ${p.sf2.b} <button class="winbtn" onclick="playoffWin('sf2','b')" ${p.sf2.winner?'disabled':''}>WIN</button>`:"Откроется после 20 групповых боёв"}</div>${p.sf2?.winner?`<span class="done">Победитель: ${p.sf2.winner}</span>`:""}</div>`;
+ const thirdReady=p.sf1?.winner&&p.sf2?.winner;
+ if(thirdReady){
+   const losers=[p.sf1.a,p.sf1.b].find(x=>x!==p.sf1.winner), loser2=[p.sf2.a,p.sf2.b].find(x=>x!==p.sf2.winner);
+   if(!p.third)p.third={a:losers,b:loser2};
+ }
+ if(p.third)html+=`<div class="stage"><b>BRONZE FIGHT — 3RD PLACE</b><div class="matchrow">${p.third.a} <button class="winbtn" onclick="playoffWin('third','a')" ${p.third.winner?'disabled':''}>WIN</button> VS ${p.third.b} <button class="winbtn" onclick="playoffWin('third','b')" ${p.third.winner?'disabled':''}>WIN</button></div>${p.third.winner?`<span class="done">3rd place: ${p.third.winner}</span>`:""}</div>`;
+ if(p.sf1?.winner&&p.sf2?.winner&&!p.final)p.final={a:p.sf1.winner,b:p.sf2.winner};
+ if(p.final)html+=`<div class="stage" style="border-color:#d7a83d"><b style="color:#d7a83d">⚠ FINISH HIM! — GRAND FINAL</b><div class="matchrow">${p.final.a} <button class="winbtn" onclick="playoffWin('final','a')" ${p.final.winner?'disabled':''}>WIN</button> VS ${p.final.b} <button class="winbtn" onclick="playoffWin('final','b')" ${p.final.winner?'disabled':''}>WIN</button></div>${p.final.winner?`<span class="done">🏆 CHAMPION: ${p.final.winner}</span>`:""}</div>`;
+ document.getElementById("playoff").innerHTML=html;
+ if(p.final?.winner){document.getElementById("champ").classList.add("show");document.getElementById("champName").textContent=p.final.winner}
+}
+function playoffWin(stage,side){
+ const p=state.playoff[stage];if(!p||p.winner)return;
+ p.winner=side==="a"?p.a:p.b;save();showFatal(p.winner);render();
+}
+window.record=record;window.playoffWin=playoffWin;
+
+document.getElementById("spin").onclick=()=>{
+ const available=pairs.filter(p=>!state.results[pairKey(p[0],p[1])]);
+ if(!available.length){document.getElementById("rouletteResult").textContent="Групповой этап завершён. Идите в ТАБЛИЦУ → PLAYOFF.";return}
+ const f1=document.querySelector("#rf1 .name"),f2=document.querySelector("#rf2 .name");
+ const pic1=document.querySelector("#rf1 .pic"),pic2=document.querySelector("#rf2 .pic");
+ document.querySelectorAll(".fighter").forEach(x=>x.classList.add("rolling"));
+ let n=0;const timer=setInterval(()=>{
+   const p=available[Math.floor(Math.random()*available.length)];
+   f1.textContent=p[0];f2.textContent=p[1];pic1.style.backgroundImage=photo(p[0])?`url('${photo(p[0])}')`:"";pic2.style.backgroundImage=photo(p[1])?`url('${photo(p[1])}')`:"";
+   n++;if(n>22){clearInterval(timer);document.querySelectorAll(".fighter").forEach(x=>x.classList.remove("rolling"));state.lastSpin=p;save();document.getElementById("rouletteResult").innerHTML=`<b style="color:#e52334">FIGHT ${playedGroup()+1}</b> — ${p[0]} vs ${p[1]}<br><span class="small">После боя отметьте победителя в таблице.</span>`}
+ },70);
+};
+
+function renderRoster(){
+ document.getElementById("roster").innerHTML=fighters.map(n=>`<div class="card"><div class="portrait" style="${photo(n)?`background-image:url('${photo(n)}')`:""}"></div><div class="rn">${n}</div><input class="upload" type="file" accept="image/*" data-name="${n}"></div>`).join("");
+ document.querySelectorAll(".upload").forEach(inp=>inp.onchange=e=>{
+   const file=e.target.files[0]; if(!file) return;
+   const name=e.target.dataset.name;
+   const url=URL.createObjectURL(file);
+   const img=new Image();
+   img.onload=()=>{
+     const max=900, scale=Math.min(1,max/Math.max(img.naturalWidth,img.naturalHeight));
+     const w=Math.max(1,Math.round(img.naturalWidth*scale)), h=Math.max(1,Math.round(img.naturalHeight*scale));
+     const c=document.createElement('canvas'); c.width=w; c.height=h;
+     const ctx=c.getContext('2d');
+     ctx.drawImage(img,0,0,w,h);
+     const im=ctx.getImageData(0,0,w,h), d=im.data;
+     for(let i=0;i<d.length;i+=4){
+       let r=d[i],g=d[i+1],b=d[i+2];
+       let lum=.299*r+.587*g+.114*b;
+       let contrast=(lum-128)*1.65+128;
+       d[i]=Math.min(255,contrast*1.28);
+       d[i+1]=Math.min(255,contrast*.52);
+       d[i+2]=Math.min(255,contrast*.55);
+     }
+     ctx.putImageData(im,0,0);
+     const grad=ctx.createRadialGradient(w/2,h*.42,Math.min(w,h)*.12,w/2,h*.5,Math.max(w,h)*.7);
+     grad.addColorStop(0,'rgba(255,60,60,.05)'); grad.addColorStop(.65,'rgba(20,0,0,.15)'); grad.addColorStop(1,'rgba(0,0,0,.72)');
+     ctx.fillStyle=grad; ctx.fillRect(0,0,w,h);
+     ctx.strokeStyle='rgba(230,30,47,.9)'; ctx.lineWidth=Math.max(4,Math.round(Math.min(w,h)/90)); ctx.strokeRect(3,3,w-6,h-6);
+     ctx.font=`900 ${Math.max(18,Math.round(w/18))}px Impact,Arial`;
+     ctx.textAlign='center'; ctx.fillStyle='rgba(255,255,255,.95)';
+     ctx.shadowColor='rgba(0,0,0,.9)'; ctx.shadowBlur=8;
+     ctx.fillText(name.toUpperCase(),w/2,h-Math.max(18,Math.round(h/15)));
+     const data=c.toDataURL('image/jpeg',.82);
+     state.photos[name]=data; save(); URL.revokeObjectURL(url); render();
+   };
+   img.onerror=()=>{URL.revokeObjectURL(url); alert('Не удалось обработать это фото. Попробуйте другое изображение.');};
+   img.src=url;
+ });
+}
+document.getElementById("reset").onclick=()=>{if(confirm("Удалить все результаты и фото из этого браузера?")){localStorage.removeItem(key);location.reload()}};
+render();
+</script>
+</body>
+</html>
